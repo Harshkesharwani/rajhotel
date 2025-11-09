@@ -101,7 +101,8 @@ load_dotenv(BASE_DIR / '.env')
 # === GENERAL ===
 SECRET_KEY = os.getenv('DJANGO_SECRET', 'unsafe-secret-key')
 DEBUG = os.getenv('DEBUG', '1') == '1'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = ['*']
 
 # === DATABASE ===
 DATABASES = {
