@@ -13,7 +13,34 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
-from dotenv import load_dotenv
+
+def load_dotenv(dotenv_path=None):
+    """
+    Minimal replacement for python-dotenv's load_dotenv to avoid external dependency.
+    It reads KEY=VALUE lines from the given .env file and sets them in os.environ
+    only if the key is not already set.
+    """
+    if dotenv_path is None:
+        return
+    dotenv_path = Path(dotenv_path)
+    if not dotenv_path.exists():
+        return
+    try:
+        with dotenv_path.open(encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                if '=' not in line:
+                    continue
+                key, val = line.split('=', 1)
+                key = key.strip()
+                val = val.strip().strip('"').strip("'")
+                if key not in os.environ:
+                    os.environ[key] = val
+    except Exception:
+        # Fail silently to mimic load_dotenv behavior in non-critical contexts
+        return
 
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -101,8 +128,7 @@ load_dotenv(BASE_DIR / '.env')
 # === GENERAL ===
 SECRET_KEY = os.getenv('DJANGO_SECRET', 'unsafe-secret-key')
 DEBUG = os.getenv('DEBUG', '1') == '1'
-# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 # === DATABASE ===
 DATABASES = {
