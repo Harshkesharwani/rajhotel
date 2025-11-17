@@ -59,7 +59,8 @@ SECRET_KEY = 'django-insecure-%eak)1=_(pm3rgbe&l7rdxf%6s$(xayjem0zlfmv20x@d^9!c_
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env") 
 
 # Application definition
 
